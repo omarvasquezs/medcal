@@ -137,7 +137,6 @@
     max-width: 1140px;
     margin-left: auto;
     margin-right: auto;
-    padding: 0 15px;
 }
 
 /* Match the original styles from principal.css */
@@ -178,11 +177,9 @@
 }
 
 .medcal-tabbed-container .col-md-12,
-.medcal-tabbed-container .col-lg-10 {
+.medcal-tabbed-container .col-lg-12 {
     position: relative;
     width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
 }
 
 @media (min-width: 768px) {

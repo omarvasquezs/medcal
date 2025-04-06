@@ -83,7 +83,7 @@ if ($is_tabbed) {
                 <h4 class="display-4"><?php echo esc_html($atts['title']); ?></h4>
             </div>
             <div class="row">
-                <div class="col-lg-10 col-md-12 mx-auto">
+                <div class="col-lg-12 col-md-12 mx-auto">
                     <ul class="nav nav-tabs" id="<?php echo esc_attr($container_id); ?>-tabs" role="tablist">
                         <?php
                         $index = 0;
