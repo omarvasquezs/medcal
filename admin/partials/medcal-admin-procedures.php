@@ -333,6 +333,13 @@ settings_errors('medcal_procedures');
     .medcal-tab-content.active {
         display: block;
     }
+    .medcal-procedure-card-placeholder {
+        background: #e0e0e0;
+        border: 1px dashed #ccc;
+        height: 50px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+    }
 </style>
 
 <script>
@@ -340,8 +347,11 @@ jQuery(document).ready(function($) {
     // Enable sortable functionality
     $('#sortable-procedures').sortable({
         handle: '.medcal-drag-handle',
+        placeholder: 'medcal-procedure-card-placeholder',
+        opacity: 0.8,
         update: function(event, ui) {
             // Update order in the backend if needed
+            updateProcedureOrderInputs();
         }
     });
 
@@ -401,5 +411,32 @@ jQuery(document).ready(function($) {
 
     // Show the first tab by default
     $('.nav-tab-active').trigger('click');
+    
+    // Add function to create hidden inputs with procedure order values
+    function updateProcedureOrderInputs() {
+        // Remove existing order inputs
+        $('.procedure-order-input').remove();
+        
+        // Create new hidden inputs with the current order
+        var order = 0;
+        $('#sortable-procedures .medcal-procedure-card').each(function() {
+            var procedureId = $(this).data('procedure-id');
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'procedures[' + procedureId + '][order]',
+                value: order,
+                class: 'procedure-order-input'
+            }).appendTo('form');
+            order++;
+        });
+    }
+    
+    // Update order inputs when form is submitted
+    $('form').on('submit', function() {
+        updateProcedureOrderInputs();
+    });
+    
+    // Initialize the order inputs on page load
+    updateProcedureOrderInputs();
 });
 </script>

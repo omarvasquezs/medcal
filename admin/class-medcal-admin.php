@@ -412,6 +412,8 @@ class Medcal_Admin {
 					'total' => floatval($data['total']),
 					'pago_texto' => sanitize_text_field($data['pago_texto']),
 					'enabled' => isset($data['enabled']) ? true : false,
+					// Preserve the order value if it exists
+					'order' => isset($data['order']) ? intval($data['order']) : null,
 				);
 			}
 		}
