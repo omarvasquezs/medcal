@@ -39,17 +39,10 @@ settings_errors('medcal_procedures');
         <form method="post" action="">
             <?php wp_nonce_field('medcal_add_procedure', 'medcal_add_nonce'); ?>
             
+            <!-- Hidden ID field, auto-generated from title -->
+            <input type="hidden" id="procedure_id" name="procedure_id" required>
+            
             <table class="form-table">
-                <tr>
-                    <th scope="row">
-                        <label for="procedure_id"><?php _e('ID del Procedimiento', 'medcal'); ?></label>
-                    </th>
-                    <td>
-                        <input type="text" id="procedure_id" name="procedure_id" class="regular-text" required>
-                        <p class="description"><?php _e('ID único para el procedimiento (solo letras minúsculas, números y guiones).', 'medcal'); ?></p>
-                    </td>
-                </tr>
-                
                 <tr>
                     <th scope="row">
                         <label for="procedure_title"><?php _e('Título', 'medcal'); ?></label>
@@ -335,16 +328,24 @@ jQuery(document).ready(function($) {
         }
     });
     
-    // Auto-generate ID from title
-    $('#procedure_title').on('blur', function() {
+    // Auto-generate ID from title as user types
+    $('#procedure_title').on('input', function() {
         var title = $(this).val();
-        if (title && $('#procedure_id').val() === '') {
-            var id = title.toLowerCase()
-                .replace(/[^\w ]+/g, '')
-                .replace(/ +/g, '_');
-            $('#procedure_id').val(id);
-        }
+        var id = title.toLowerCase()
+            .replace(/[^\w ]+/g, '')  // Remove special chars
+            .replace(/ñ/g, 'n')       // Replace ñ with n
+            .replace(/á/g, 'a')       // Replace Spanish accents
+            .replace(/é/g, 'e')
+            .replace(/í/g, 'i')
+            .replace(/ó/g, 'o')
+            .replace(/ú/g, 'u')
+            .replace(/ +/g, '_');     // Replace spaces with underscores
+        
+        $('#procedure_id').val(id);
     });
+
+    // Disable direct editing of procedure ID since it's auto-generated
+    $('#procedure_id').prop('readonly', true);
 
     // Handle delete button click
     $('.medcal-delete-button').on('click', function() {

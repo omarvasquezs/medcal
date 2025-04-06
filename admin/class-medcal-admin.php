@@ -175,8 +175,24 @@ class Medcal_Admin {
 			return;
 		}
 		
+		$procedure_title = sanitize_text_field($_POST['procedure_title']);
+		
+		// Check if procedure with same title already exists
+		$existing_procedures = $this->procedures->get_all_procedures();
+		foreach ($existing_procedures as $proc) {
+			if (strtolower($proc['title']) === strtolower($procedure_title)) {
+				add_settings_error(
+					'medcal_procedures',
+					'medcal_procedure_add_error',
+					__('Error al agregar el procedimiento. Ya existe un procedimiento con este título.', 'medcal'),
+					'error'
+				);
+				return;
+			}
+		}
+		
 		$procedure_data = array(
-			'title'      => sanitize_text_field($_POST['procedure_title']),
+			'title'      => $procedure_title,
 			'currency'   => sanitize_text_field($_POST['procedure_currency']),
 			'total'      => floatval($_POST['procedure_total']),
 			'pago_texto' => isset($_POST['procedure_pago_texto']) ? sanitize_text_field($_POST['procedure_pago_texto']) : 'PAGUE SOLO',
