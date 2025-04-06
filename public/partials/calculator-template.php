@@ -65,7 +65,7 @@ if ($is_tabbed) {
                                     <h1><?php echo esc_html($procedure['title']); ?></h1>
                                     <div class="payment-section">
                                         <h2><?php echo esc_html($procedure['pago_texto'] ?? 'PAGUE'); ?></h2>
-                                        <p style="font-size: 2.2rem;"><?php echo esc_html($procedure['currency']); ?><span
+                                        <p style="font-size: 2.2rem;"><?php echo esc_html($procedure['currency']); ?> <span
                                                 id="<?php echo esc_attr($calculator_id); ?>-total"
                                                 data-total-cost="<?php echo esc_attr($procedure['total']); ?>"></span></p>
                                         <h2 style="margin-bottom: 0;">EN</h2>
@@ -111,7 +111,7 @@ if ($is_tabbed) {
         <h1><?php echo esc_html($procedure['title']); ?></h1>
         <div class="payment-section">
             <h2><?php echo esc_html($procedure['pago_texto'] ?? 'PAGUE'); ?></h2>
-            <p style="font-size: 2.2rem;"><?php echo esc_html($procedure['currency']); ?><span
+            <p style="font-size: 2.2rem;"><?php echo esc_html($procedure['currency']); ?> <span
                     id="<?php echo esc_attr($calculator_id); ?>-total"
                     data-total-cost="<?php echo esc_attr($procedure['total']); ?>"></span></p>
             <h2 style="margin-bottom: 0;">EN</h2>
