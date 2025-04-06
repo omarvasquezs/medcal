@@ -19,6 +19,60 @@ if (!defined('WPINC')) {
 // Check if we're rendering a tabbed interface or a single calculator
 $is_tabbed = isset($procedures) && is_array($procedures) && !empty($procedures);
 
+// Get color settings with defaults
+$title_color = isset($general_settings['title_color']) ? $general_settings['title_color'] : '#000000';
+$button_color = isset($general_settings['button_color']) ? $general_settings['button_color'] : '#25D366';
+$tab_color = isset($general_settings['tab_color']) ? $general_settings['tab_color'] : '#0d6efd';
+$inactive_tab_color = isset($general_settings['inactive_tab_color']) ? $general_settings['inactive_tab_color'] : '#6c757d';
+
+// Generate custom CSS for colors
+?>
+<style>
+    /* Title color */
+    .medcal-tabbed-container h4.display-4,
+    .calculator h1 {
+        color: <?php echo esc_attr($title_color); ?> !important;
+    }
+    
+    /* Button styles */
+    .quote-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: <?php echo esc_attr($button_color); ?> !important;
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        border: 2px solid <?php echo esc_attr($button_color); ?> !important;
+        transition: all 0.3s ease;
+    }
+    
+    .quote-button:hover {
+        background-color: <?php echo esc_attr(medcal_adjust_brightness($button_color, -20)); ?> !important;
+        border-color: <?php echo esc_attr(medcal_adjust_brightness($button_color, -20)); ?> !important;
+        color: #fff !important;
+    }
+    
+    /* Active tab */
+    .nav-tabs .nav-link.active {
+        color: <?php echo esc_attr($tab_color); ?> !important;
+        border-color: <?php echo esc_attr($tab_color); ?> !important;
+        border-bottom-color: transparent !important;
+    }
+    
+    /* Inactive tabs */
+    .nav-tabs .nav-link:not(.active) {
+        color: <?php echo esc_attr($inactive_tab_color); ?> !important;
+    }
+    
+    /* Hover effect for inactive tabs */
+    .nav-tabs .nav-link:hover:not(.active) {
+        border-color: #e9ecef #e9ecef #dee2e6;
+        color: <?php echo esc_attr(medcal_adjust_brightness($inactive_tab_color, -20)); ?> !important;
+    }
+</style>
+
+<?php
 if ($is_tabbed) {
     // Generate a unique ID for the tabbed container
     $container_id = 'medcal-tabs-' . uniqid();
@@ -85,7 +139,7 @@ if ($is_tabbed) {
                                                     id="<?php echo esc_attr($calculator_id); ?>-term"></span></p>
                                         </div>
                                     </div>
-                                    <div style="padding: 20px;">
+                                    <div>
                                         <a href="https://wa.me/<?php echo esc_attr($atts['contact_number']); ?>"
                                             target="_blank"
                                             class="quote-button"><?php echo esc_html($atts['button_text']); ?></a>
@@ -129,7 +183,7 @@ if ($is_tabbed) {
                 <p style="font-size: 2rem;"><span id="<?php echo esc_attr($calculator_id); ?>-term"></span></p>
             </div>
         </div>
-        <div style="padding: 20px;">
+        <div>
             <a href="https://wa.me/<?php echo esc_attr($atts['contact_number']); ?>" target="_blank"
                 class="quote-button"><?php echo esc_html($atts['button_text']); ?></a>
         </div>

@@ -31,12 +31,14 @@ settings_errors('medcal_general_settings');
                 <li><?php _e('<strong>Plazos:</strong> Controla los términos mínimos y máximos para los pagos a plazos.', 'medcal'); ?></li>
                 <li><?php _e('<strong>Número de WhatsApp:</strong> Número que se contactará cuando el usuario haga clic en el botón.', 'medcal'); ?></li>
                 <li><?php _e('<strong>Texto del Botón:</strong> Texto que aparece en el botón de WhatsApp.', 'medcal'); ?></li>
+                <li><?php _e('<strong>Colores:</strong> Personalice los colores de elementos específicos de la calculadora.', 'medcal'); ?></li>
             </ul>
         </div>
         
         <form method="post" action="<?php echo esc_url(admin_url('admin.php?page=' . $_GET['page'])); ?>">
             <?php wp_nonce_field('medcal_general_settings', 'medcal_general_nonce'); ?>
             
+            <h3><?php _e('Configuración Básica', 'medcal'); ?></h3>
             <table class="form-table">
                 <tr>
                     <th scope="row">
@@ -120,6 +122,53 @@ settings_errors('medcal_general_settings');
                 </tr>
             </table>
             
+            <h3><?php _e('Personalización de Colores', 'medcal'); ?></h3>
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        <label for="title_color"><?php _e('Color del Título', 'medcal'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="title_color" name="title_color" class="medcal-color-picker" 
+                               value="<?php echo esc_attr(isset($general_settings['title_color']) ? $general_settings['title_color'] : '#000000'); ?>">
+                        <p class="description"><?php _e('Color para el título de la calculadora.', 'medcal'); ?></p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="button_color"><?php _e('Color del Botón', 'medcal'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="button_color" name="button_color" class="medcal-color-picker" 
+                               value="<?php echo esc_attr(isset($general_settings['button_color']) ? $general_settings['button_color'] : '#25D366'); ?>">
+                        <p class="description"><?php _e('Color para el botón de cotización/WhatsApp.', 'medcal'); ?></p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="tab_color"><?php _e('Color de Pestaña Activa', 'medcal'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="tab_color" name="tab_color" class="medcal-color-picker" 
+                               value="<?php echo esc_attr(isset($general_settings['tab_color']) ? $general_settings['tab_color'] : '#0d6efd'); ?>">
+                        <p class="description"><?php _e('Color para la pestaña activa/seleccionada.', 'medcal'); ?></p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="inactive_tab_color"><?php _e('Color de Pestañas Inactivas', 'medcal'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="inactive_tab_color" name="inactive_tab_color" class="medcal-color-picker" 
+                               value="<?php echo esc_attr(isset($general_settings['inactive_tab_color']) ? $general_settings['inactive_tab_color'] : '#6c757d'); ?>">
+                        <p class="description"><?php _e('Color para las pestañas no seleccionadas.', 'medcal'); ?></p>
+                    </td>
+                </tr>
+            </table>
+            
             <p class="submit">
                 <button type="submit" name="medcal_save_general_settings" class="button button-primary">
                     <?php _e('Guardar Cambios', 'medcal'); ?>
@@ -128,3 +177,10 @@ settings_errors('medcal_general_settings');
         </form>
     </div>
 </div>
+
+<script>
+jQuery(document).ready(function($) {
+    // Initialize color pickers
+    $('.medcal-color-picker').wpColorPicker();
+});
+</script>

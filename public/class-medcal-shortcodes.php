@@ -82,6 +82,7 @@ class Medcal_Shortcodes {
             'max_term' => $general_settings['max_term'],
             'default_term' => $general_settings['default_term'],
             'button_text' => $general_settings['button_text'],
+            'title' => $general_settings['title'],
         ), $atts, 'medcal_calculator' );
         
         // Get the procedure data
@@ -182,7 +183,7 @@ class Medcal_Shortcodes {
                     <p style="font-size: 2rem;"><span id="<?php echo esc_attr( $calculator_id ); ?>-term"></span></p>
                 </div>
             </div>
-            <div style="padding: 20px;">
+            <div>
                 <a href="https://wa.me/<?php echo esc_attr( $atts['contact_number'] ); ?>" target="_blank" class="quote-button"><?php echo esc_html( $atts['button_text'] ); ?></a>
             </div>
         </div>

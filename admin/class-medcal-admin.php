@@ -84,6 +84,10 @@ class Medcal_Admin {
 		// Enqueue jQuery UI Sortable for drag and drop functionality
 		wp_enqueue_script('jquery-ui-sortable');
 		
+		 // Enqueue WordPress color picker
+		wp_enqueue_style('wp-color-picker');
+		wp_enqueue_script('wp-color-picker');
+		
 		// Localize the script with data for AJAX calls
 		wp_localize_script($this->plugin_name, 'medcal_vars', array(
 			'procedure_order_nonce' => wp_create_nonce('medcal_procedure_order'),
@@ -476,6 +480,10 @@ class Medcal_Admin {
 			'contact_number' => isset($_POST['contact_number']) ? sanitize_text_field($_POST['contact_number']) : '51941888957',
 			'button_text' => isset($_POST['button_text']) ? sanitize_text_field($_POST['button_text']) : 'CONTÁCTENOS',
 			'title' => isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Simulador de Precios',
+			'title_color' => isset($_POST['title_color']) && !empty($_POST['title_color']) ? sanitize_hex_color($_POST['title_color']) : '#000000',
+			'button_color' => isset($_POST['button_color']) && !empty($_POST['button_color']) ? sanitize_hex_color($_POST['button_color']) : '#25D366',
+			'tab_color' => isset($_POST['tab_color']) && !empty($_POST['tab_color']) ? sanitize_hex_color($_POST['tab_color']) : '#0d6efd',
+			'inactive_tab_color' => isset($_POST['inactive_tab_color']) && !empty($_POST['inactive_tab_color']) ? sanitize_hex_color($_POST['inactive_tab_color']) : '#6c757d',
 		);
 
 		$success = update_option('medcal_general_settings', $general_settings);

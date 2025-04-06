@@ -49,10 +49,6 @@
     color: #000;
 }
 
-.calculator .term {
-    margin-top: 20px;
-}
-
 .calculator .range-container {
     display: flex;
     align-items: center;
@@ -127,7 +123,6 @@
     cursor: pointer;
     border: none;
     display: inline-block;
-    margin-top: 20px;
 }
 
 .calculator .quote-button:hover {
