@@ -1,0 +1,295 @@
+/**
+ * Combined CSS for MedCal plugin
+ * Merges styles from medcal-public.css and medcal-tabs.css
+ */
+
+/* Import fonts once */
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap);
+
+/* Calculator Styles */
+.calculator {
+    background-color: transparent;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.831372549) 0%, rgba(1, 173, 239, 0.168627451) 100%)!important;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin-top: 20px!important;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    margin-bottom: auto!important;
+    text-align: center!important;
+}
+
+.calculator h1 {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.calculator .payment-section {
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.calculator .payment-section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.calculator .payment-section p {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #000;
+}
+
+.calculator .term {
+    margin-top: 20px;
+}
+
+.calculator .range-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px;
+    border-radius: 5px;
+}
+
+.calculator .arrow {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #2964A5;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 10px;
+}
+
+.calculator .rango {
+    flex-grow: 1;
+    margin: 0 10px;
+    background: transparent;
+    width: 80%;
+}
+
+.calculator .rango:hover {
+    cursor: pointer;
+}
+
+.calculator .rango::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #2964A5;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.calculator .rango::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #2964A5;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.calculator .rango::-webkit-slider-runnable-track {
+    height: 0.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 1px;
+}
+
+.calculator .rango::-moz-range-track {
+    height: 0.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 1px;
+}
+
+.calculator .quote-button {
+    background-color: #2964A5;
+    text-decoration: none;
+    font-size: 17px;
+    line-height: 1;
+    padding: 12px 24px;
+    color: #fff;
+    fill: #fff;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.calculator .quote-button:hover {
+    background-color: #295586;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Tabbed Container Styles */
+.medcal-tabbed-container {
+    font-family: "Montserrat", sans-serif;
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px;
+}
+
+/* Match the original styles from principal.css */
+.medcal-tabbed-container h2, 
+.medcal-tabbed-container h4, 
+.medcal-tabbed-container button.nav-link {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800 !important;
+    color: #2964a5;
+}
+
+.medcal-tabbed-container .display-4 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #2964a5 !important;
+}
+
+/* Bootstrap grid styles */
+.medcal-tabbed-container .container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 1200px) {
+    .medcal-tabbed-container .container {
+        max-width: 1140px;
+    }
+}
+
+.medcal-tabbed-container .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.medcal-tabbed-container .col-md-12,
+.medcal-tabbed-container .col-lg-10 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@media (min-width: 768px) {
+    .medcal-tabbed-container .col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .medcal-tabbed-container .col-lg-10 {
+        flex: 0 0 83.33333%;
+        max-width: 83.33333%;
+    }
+}
+
+.medcal-tabbed-container .mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.medcal-tabbed-container .my-5 {
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+}
+
+.medcal-tabbed-container .mt-5 {
+    margin-top: 3rem !important;
+}
+
+.medcal-tabbed-container .text-center {
+    text-align: center !important;
+}
+
+.medcal-tabbed-container .text-uppercase {
+    text-transform: uppercase !important;
+}
+
+/* Nav tabs styling */
+.medcal-tabbed-container .nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+/* Removing background color from tabs, even for active or hover states */
+.medcal-tabbed-container .nav-tabs .nav-link {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: #01ADEF;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: none;
+    background: transparent !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.medcal-tabbed-container .nav-tabs .nav-link:hover {
+    color: #01ADEF;
+    background: transparent !important;
+    border-radius: 5px;
+}
+
+.medcal-tabbed-container .nav-tabs .nav-link.active {
+    color: #01ADEF;
+    background: transparent !important;
+    border-radius: 5px;
+}
+
+/* Tab content styling */
+.medcal-tabbed-container .tab-content {
+    background-color: #d2d2d2;
+    border: none;
+    padding: 20px;
+    margin-top: 0;
+    border-radius: 10px;
+}
+
+.medcal-tabbed-container .tab-pane {
+    display: none;
+}
+
+.medcal-tabbed-container .tab-pane.active {
+    display: block;
+}
+
+.medcal-tabbed-container .fade {
+    transition: opacity 0.15s linear;
+}
+
+.medcal-tabbed-container .fade:not(.show) {
+    opacity: 0;
+}
+
+.medcal-tabbed-container .fade.show {
+    opacity: 1;
+}
+
+/* Override calculator styling in tabbed interface */
+.medcal-tabbed-container .calculator {
+    margin-top: 20px !important;
+}

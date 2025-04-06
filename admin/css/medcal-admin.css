@@ -1,0 +1,247 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+/**
+ * Admin styles for MedCal plugin
+ */
+
+.medcal-admin-container {
+    max-width: 1200px;
+    padding: 20px 0;
+}
+
+.medcal-admin-container h1 {
+    margin-bottom: 20px;
+}
+
+.medcal-admin-header {
+    margin-bottom: 20px;
+}
+
+.medcal-admin-header h2 {
+    margin-bottom: 10px;
+}
+
+.medcal-admin-actions {
+    margin: 20px 0;
+}
+
+.medcal-admin-reset {
+    margin-top: 20px;
+}
+
+.medcal-admin-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.medcal-admin-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.medcal-procedure-card {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #0073aa;
+    border-radius: 3px;
+}
+
+.medcal-procedure-card h3 {
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.medcal-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.medcal-form-row label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.medcal-form-field {
+    flex: 1;
+    min-width: 200px;
+    padding: 0 10px;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 782px) {
+    .medcal-form-field {
+        flex: 0 0 100%;
+        margin-right: 0;
+    }
+}
+
+.medcal-form-field input[type="text"],
+.medcal-form-field input[type="number"],
+.medcal-form-field select {
+    width: 100%;
+}
+
+.medcal-checkbox-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.medcal-checkbox-field input {
+    margin-right: 8px;
+}
+
+.medcal-submit-row {
+    margin: 20px 0;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+}
+
+.medcal-submit-row .button {
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Toggle switch */
+.medcal-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin: 0 10px;
+}
+
+.medcal-toggle-switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.medcal-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.medcal-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .medcal-toggle-slider {
+    background-color: #2196F3;
+}
+
+input:focus + .medcal-toggle-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .medcal-toggle-slider:before {
+    transform: translateX(26px);
+}
+
+/* Status indicator text */
+.medcal-status-text {
+    font-size: 12px;
+    font-weight: normal;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+.medcal-status-enabled {
+    background-color: #d4f4e2;
+    color: #0a906e;
+}
+
+.medcal-status-disabled {
+    background-color: #f8d7da;
+    color: #a71d2a;
+}
+
+/* Tabs for procedures in general settings */
+.medcal-tabs {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.medcal-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin-bottom: -1px;
+}
+
+.medcal-tab.active {
+    border: 1px solid #ccc;
+    border-bottom-color: #f1f1f1;
+    background-color: #f1f1f1;
+}
+
+.medcal-tab-content {
+    display: none;
+}
+
+.medcal-tab-content.active {
+    display: block;
+}
+
+.medcal-admin-help {
+    background: #f8f9fa;
+    border-left: 4px solid #0073aa;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.medcal-admin-help h3 {
+    margin-top: 0;
+}
+
+.medcal-admin-help code {
+    display: block;
+    padding: 8px;
+    margin: 10px 0;
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+input[type="text"].small-text {
+    width: 80px;
+}
+
+/* Make sure tables look good on mobile */
+@media screen and (max-width: 782px) {
+    .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.check-column) {
+        display: table-cell;
+    }
+}
