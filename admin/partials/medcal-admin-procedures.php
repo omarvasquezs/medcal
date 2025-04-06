@@ -29,11 +29,80 @@ settings_errors('medcal_procedures');
     </div>
 
     <div class="nav-tab-wrapper medcal-tabs">
-        <a href="#tab-add-procedure" class="nav-tab nav-tab-active"><?php _e('Agregar Nuevo Procedimiento', 'medcal'); ?></a>
-        <a href="#tab-edit-procedures" class="nav-tab"><?php _e('Procedimientos Existentes', 'medcal'); ?></a>
+        <a href="#tab-edit-procedures" class="nav-tab nav-tab-active"><?php _e('Procedimientos Existentes', 'medcal'); ?></a>
+        <a href="#tab-add-procedure" class="nav-tab"><?php _e('Agregar Nuevo Procedimiento', 'medcal'); ?></a>
     </div>
 
-    <div id="tab-add-procedure" class="medcal-tab-content medcal-admin-section">
+    <div id="tab-edit-procedures" class="medcal-tab-content medcal-admin-section active" style="display: block;">
+        <h2><?php _e('Procedimientos Existentes', 'medcal'); ?></h2>
+        
+        <form method="post" action="">
+            <?php wp_nonce_field('medcal_save_procedures', 'medcal_nonce'); ?>
+            
+            <?php foreach ($procedures as $key => $procedure) : ?>
+                <div class="medcal-procedure-card">
+                    <h3>
+                        <?php echo esc_html($procedure['title']); ?>
+                        <label class="medcal-toggle-switch">
+                            <input type="checkbox" name="procedures[<?php echo esc_attr($key); ?>][enabled]" value="1" <?php checked(isset($procedure['enabled']) && $procedure['enabled']); ?>>
+                            <span class="medcal-toggle-slider"></span>
+                        </label>
+                        <span class="medcal-status-text <?php echo isset($procedure['enabled']) && $procedure['enabled'] ? 'medcal-status-enabled' : 'medcal-status-disabled'; ?>">
+                            <?php echo isset($procedure['enabled']) && $procedure['enabled'] ? __('Activo', 'medcal') : __('Inactivo', 'medcal'); ?>
+                        </span>
+                        
+                        <!-- Delete procedure button (not a nested form) -->
+                        <button type="button" class="button button-secondary button-small medcal-delete-button" 
+                                data-procedure-id="<?php echo esc_attr($key); ?>" 
+                                data-procedure-title="<?php echo esc_attr($procedure['title']); ?>">
+                            <span class="dashicons dashicons-trash"></span>
+                        </button>
+                    </h3>
+                    
+                    <div class="medcal-form-row">
+                        <div class="medcal-form-field">
+                            <label for="<?php echo esc_attr($key); ?>-title"><?php _e('Título', 'medcal'); ?></label>
+                            <input type="text" id="<?php echo esc_attr($key); ?>-title" 
+                                   name="procedures[<?php echo esc_attr($key); ?>][title]" 
+                                   value="<?php echo esc_attr($procedure['title']); ?>" required>
+                        </div>
+                        
+                        <div class="medcal-form-field">
+                            <label for="<?php echo esc_attr($key); ?>-pago_texto"><?php _e('Texto de Pago', 'medcal'); ?></label>
+                            <input type="text" id="<?php echo esc_attr($key); ?>-pago_texto" 
+                                   name="procedures[<?php echo esc_attr($key); ?>][pago_texto]" 
+                                   value="<?php echo esc_attr($procedure['pago_texto'] ?? 'PAGUE SOLO'); ?>">
+                        </div>
+                    </div>
+                    
+                    <div class="medcal-form-row">
+                        <div class="medcal-form-field">
+                            <label for="<?php echo esc_attr($key); ?>-currency"><?php _e('Símbolo de Moneda', 'medcal'); ?></label>
+                            <input type="text" id="<?php echo esc_attr($key); ?>-currency" 
+                                   name="procedures[<?php echo esc_attr($key); ?>][currency]" 
+                                   value="<?php echo esc_attr($procedure['currency']); ?>">
+                        </div>
+                        
+                        <div class="medcal-form-field">
+                            <label for="<?php echo esc_attr($key); ?>-total"><?php _e('Precio Total', 'medcal'); ?></label>
+                            <input type="number" id="<?php echo esc_attr($key); ?>-total" 
+                                   name="procedures[<?php echo esc_attr($key); ?>][total]" 
+                                   value="<?php echo esc_attr($procedure['total']); ?>" 
+                                   min="0" step="0.01" required>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            
+            <div class="medcal-submit-row">
+                <button type="submit" name="medcal_save_procedures" class="button button-primary">
+                    <?php _e('Guardar Cambios', 'medcal'); ?>
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="tab-add-procedure" class="medcal-tab-content medcal-admin-section" style="display: none;">
         <h2><?php _e('Agregar Nuevo Procedimiento', 'medcal'); ?></h2>
         
         <form method="post" action="">
@@ -100,75 +169,6 @@ settings_errors('medcal_procedures');
             <div class="medcal-submit-row">
                 <button type="submit" name="medcal_add_procedure" class="button button-primary">
                     <?php _e('Agregar Procedimiento', 'medcal'); ?>
-                </button>
-            </div>
-        </form>
-    </div>
-    
-    <div id="tab-edit-procedures" class="medcal-tab-content medcal-admin-section" style="display: none;">
-        <h2><?php _e('Procedimientos Existentes', 'medcal'); ?></h2>
-        
-        <form method="post" action="">
-            <?php wp_nonce_field('medcal_save_procedures', 'medcal_nonce'); ?>
-            
-            <?php foreach ($procedures as $key => $procedure) : ?>
-                <div class="medcal-procedure-card">
-                    <h3>
-                        <?php echo esc_html($procedure['title']); ?>
-                        <label class="medcal-toggle-switch">
-                            <input type="checkbox" name="procedures[<?php echo esc_attr($key); ?>][enabled]" value="1" <?php checked(isset($procedure['enabled']) && $procedure['enabled']); ?>>
-                            <span class="medcal-toggle-slider"></span>
-                        </label>
-                        <span class="medcal-status-text <?php echo isset($procedure['enabled']) && $procedure['enabled'] ? 'medcal-status-enabled' : 'medcal-status-disabled'; ?>">
-                            <?php echo isset($procedure['enabled']) && $procedure['enabled'] ? __('Activo', 'medcal') : __('Inactivo', 'medcal'); ?>
-                        </span>
-                        
-                        <!-- Delete procedure button (not a nested form) -->
-                        <button type="button" class="button button-secondary button-small medcal-delete-button" 
-                                data-procedure-id="<?php echo esc_attr($key); ?>" 
-                                data-procedure-title="<?php echo esc_attr($procedure['title']); ?>">
-                            <span class="dashicons dashicons-trash"></span>
-                        </button>
-                    </h3>
-                    
-                    <div class="medcal-form-row">
-                        <div class="medcal-form-field">
-                            <label for="<?php echo esc_attr($key); ?>-title"><?php _e('Título', 'medcal'); ?></label>
-                            <input type="text" id="<?php echo esc_attr($key); ?>-title" 
-                                   name="procedures[<?php echo esc_attr($key); ?>][title]" 
-                                   value="<?php echo esc_attr($procedure['title']); ?>" required>
-                        </div>
-                        
-                        <div class="medcal-form-field">
-                            <label for="<?php echo esc_attr($key); ?>-pago_texto"><?php _e('Texto de Pago', 'medcal'); ?></label>
-                            <input type="text" id="<?php echo esc_attr($key); ?>-pago_texto" 
-                                   name="procedures[<?php echo esc_attr($key); ?>][pago_texto]" 
-                                   value="<?php echo esc_attr($procedure['pago_texto'] ?? 'PAGUE SOLO'); ?>">
-                        </div>
-                    </div>
-                    
-                    <div class="medcal-form-row">
-                        <div class="medcal-form-field">
-                            <label for="<?php echo esc_attr($key); ?>-currency"><?php _e('Símbolo de Moneda', 'medcal'); ?></label>
-                            <input type="text" id="<?php echo esc_attr($key); ?>-currency" 
-                                   name="procedures[<?php echo esc_attr($key); ?>][currency]" 
-                                   value="<?php echo esc_attr($procedure['currency']); ?>">
-                        </div>
-                        
-                        <div class="medcal-form-field">
-                            <label for="<?php echo esc_attr($key); ?>-total"><?php _e('Precio Total', 'medcal'); ?></label>
-                            <input type="number" id="<?php echo esc_attr($key); ?>-total" 
-                                   name="procedures[<?php echo esc_attr($key); ?>][total]" 
-                                   value="<?php echo esc_attr($procedure['total']); ?>" 
-                                   min="0" step="0.01" required>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            
-            <div class="medcal-submit-row">
-                <button type="submit" name="medcal_save_procedures" class="button button-primary">
-                    <?php _e('Guardar Cambios', 'medcal'); ?>
                 </button>
             </div>
         </form>
