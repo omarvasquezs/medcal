@@ -154,10 +154,29 @@ class Medcal_Admin {
 			'default_currency' => 'S/. ',
 		));
 		
+		 // Get available currencies
+		$currencies = $this->get_available_currencies();
+		
 		// Load admin view
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/medcal-admin-procedures.php';
 	}
 	
+	/**
+	 * Get available currency options
+	 * 
+	 * @since    1.0.0
+	 * @access   private
+	 * @return   array    The available currency options
+	 */
+	private function get_available_currencies() {
+		return array(
+			'S/. ' => __('S/. (Sol peruano)', 'medcal'),
+			'S/.' => __('S/. (Sol peruano)', 'medcal'),
+			'$ ' => __('$ (Dólar)', 'medcal'),
+			'$' => __('$ (Dólar)', 'medcal')
+		);
+	}
+
 	/**
 	 * Add a new procedure.
 	 *
@@ -330,6 +349,9 @@ class Medcal_Admin {
 			'button_text' => 'CONTÁCTENOS',
 			'title' => 'Simulador de Precios',
 		));
+		
+		 // Get available currencies
+		$currencies = $this->get_available_currencies();
 		
 		// Load admin view
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/medcal-admin-general.php';

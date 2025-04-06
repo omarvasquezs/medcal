@@ -78,9 +78,15 @@ settings_errors('medcal_procedures');
                     <div class="medcal-form-row">
                         <div class="medcal-form-field">
                             <label for="<?php echo esc_attr($key); ?>-currency"><?php _e('Símbolo de Moneda', 'medcal'); ?></label>
-                            <input type="text" id="<?php echo esc_attr($key); ?>-currency" 
-                                   name="procedures[<?php echo esc_attr($key); ?>][currency]" 
-                                   value="<?php echo esc_attr($procedure['currency']); ?>">
+                            <select id="<?php echo esc_attr($key); ?>-currency" 
+                                   name="procedures[<?php echo esc_attr($key); ?>][currency]">
+                                <option value="S/. " <?php selected(strpos($procedure['currency'], 'S/') !== false, true); ?>>
+                                    <?php echo esc_html(__('S/. (Sol peruano)', 'medcal')); ?>
+                                </option>
+                                <option value="$ " <?php selected(strpos($procedure['currency'], '$') !== false, true); ?>>
+                                    <?php echo esc_html(__('$ (Dólar)', 'medcal')); ?>
+                                </option>
+                            </select>
                         </div>
                         
                         <div class="medcal-form-field">
@@ -126,8 +132,14 @@ settings_errors('medcal_procedures');
                         <label for="procedure_currency"><?php _e('Símbolo de Moneda', 'medcal'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="procedure_currency" name="procedure_currency" 
-                               value="<?php echo esc_attr($general_settings['default_currency']); ?>" required>
+                        <select id="procedure_currency" name="procedure_currency" required>
+                            <option value="S/. " <?php selected(strpos($general_settings['default_currency'], 'S/') !== false, true); ?>>
+                                <?php echo esc_html(__('S/. (Sol peruano)', 'medcal')); ?>
+                            </option>
+                            <option value="$ " <?php selected(strpos($general_settings['default_currency'], '$') !== false, true); ?>>
+                                <?php echo esc_html(__('$ (Dólar)', 'medcal')); ?>
+                            </option>
+                        </select>
                     </td>
                 </tr>
                 

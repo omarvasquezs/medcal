@@ -43,8 +43,14 @@ settings_errors('medcal_general_settings');
                         <label for="default_currency"><?php _e('Símbolo de Moneda por Defecto', 'medcal'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="default_currency" name="default_currency" 
-                               value="<?php echo esc_attr($general_settings['default_currency']); ?>" class="regular-text">
+                        <select id="default_currency" name="default_currency">
+                            <option value="S/. " <?php selected(strpos($general_settings['default_currency'], 'S/') !== false, true); ?>>
+                                <?php echo esc_html(__('S/. (Sol peruano)', 'medcal')); ?>
+                            </option>
+                            <option value="$ " <?php selected(strpos($general_settings['default_currency'], '$') !== false, true); ?>>
+                                <?php echo esc_html(__('$ (Dólar)', 'medcal')); ?>
+                            </option>
+                        </select>
                         <p class="description"><?php _e('Símbolo de moneda a usar por defecto en todos los procedimientos.', 'medcal'); ?></p>
                     </td>
                 </tr>
