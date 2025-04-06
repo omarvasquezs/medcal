@@ -28,7 +28,12 @@ settings_errors('medcal_procedures');
         <code>[calculadora_precios]</code>
     </div>
 
-    <div class="medcal-admin-section">
+    <div class="nav-tab-wrapper medcal-tabs">
+        <a href="#tab-add-procedure" class="nav-tab nav-tab-active"><?php _e('Agregar Nuevo Procedimiento', 'medcal'); ?></a>
+        <a href="#tab-edit-procedures" class="nav-tab"><?php _e('Procedimientos Existentes', 'medcal'); ?></a>
+    </div>
+
+    <div id="tab-add-procedure" class="medcal-tab-content medcal-admin-section">
         <h2><?php _e('Agregar Nuevo Procedimiento', 'medcal'); ?></h2>
         
         <form method="post" action="">
@@ -107,7 +112,7 @@ settings_errors('medcal_procedures');
         </form>
     </div>
     
-    <div class="medcal-admin-section">
+    <div id="tab-edit-procedures" class="medcal-tab-content medcal-admin-section" style="display: none;">
         <h2><?php _e('Procedimientos Existentes', 'medcal'); ?></h2>
         
         <form method="post" action="">
@@ -290,6 +295,30 @@ settings_errors('medcal_procedures');
     .medcal-delete-form button {
         color: #cc0000;
     }
+    .nav-tab-wrapper {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+    .nav-tab {
+        display: inline-block;
+        padding: 10px 15px;
+        margin-right: 5px;
+        text-decoration: none;
+        color: #0073aa;
+        border: 1px solid transparent;
+        border-radius: 3px 3px 0 0;
+    }
+    .nav-tab-active {
+        background: #fff;
+        border-color: #ddd;
+        border-bottom-color: transparent;
+    }
+    .medcal-tab-content {
+        display: none;
+    }
+    .medcal-tab-content.active {
+        display: block;
+    }
 </style>
 
 <script>
@@ -330,5 +359,17 @@ jQuery(document).ready(function($) {
                 .submit();
         }
     });
+
+    // Tab navigation
+    $('.nav-tab').on('click', function(e) {
+        e.preventDefault();
+        $('.nav-tab').removeClass('nav-tab-active');
+        $(this).addClass('nav-tab-active');
+        $('.medcal-tab-content').removeClass('active').hide();
+        $($(this).attr('href')).addClass('active').show();
+    });
+
+    // Show the first tab by default
+    $('.nav-tab-active').trigger('click');
 });
 </script>
