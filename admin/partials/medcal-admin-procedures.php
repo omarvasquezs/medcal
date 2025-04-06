@@ -35,13 +35,16 @@ settings_errors('medcal_procedures');
 
     <div id="tab-edit-procedures" class="medcal-tab-content medcal-admin-section active" style="display: block;">
         <h2><?php _e('Procedimientos Existentes', 'medcal'); ?></h2>
+        <p class="description"><?php _e('Arrastra y suelta para reordenar los procedimientos.', 'medcal'); ?></p>
         
         <form method="post" action="">
             <?php wp_nonce_field('medcal_save_procedures', 'medcal_nonce'); ?>
             
+            <div id="sortable-procedures">
             <?php foreach ($procedures as $key => $procedure) : ?>
-                <div class="medcal-procedure-card">
+                <div class="medcal-procedure-card" data-procedure-id="<?php echo esc_attr($key); ?>">
                     <h3>
+                        <span class="medcal-drag-handle dashicons dashicons-menu"></span>
                         <?php echo esc_html($procedure['title']); ?>
                         <label class="medcal-toggle-switch">
                             <input type="checkbox" name="procedures[<?php echo esc_attr($key); ?>][enabled]" value="1" <?php checked(isset($procedure['enabled']) && $procedure['enabled']); ?>>
@@ -99,6 +102,7 @@ settings_errors('medcal_procedures');
                     </div>
                 </div>
             <?php endforeach; ?>
+            </div>
             
             <div class="medcal-submit-row">
                 <button type="submit" name="medcal_save_procedures" class="button button-primary">
@@ -214,6 +218,7 @@ settings_errors('medcal_procedures');
         padding: 15px;
         margin-bottom: 15px;
         border-radius: 5px;
+        cursor: move;
     }
     .medcal-procedure-card h3 {
         display: flex;
@@ -221,6 +226,10 @@ settings_errors('medcal_procedures');
         margin-top: 0;
         padding-bottom: 10px;
         border-bottom: 1px solid #eee;
+    }
+    .medcal-drag-handle {
+        cursor: move;
+        margin-right: 10px;
     }
     .medcal-toggle-switch {
         position: relative;
@@ -328,6 +337,14 @@ settings_errors('medcal_procedures');
 
 <script>
 jQuery(document).ready(function($) {
+    // Enable sortable functionality
+    $('#sortable-procedures').sortable({
+        handle: '.medcal-drag-handle',
+        update: function(event, ui) {
+            // Update order in the backend if needed
+        }
+    });
+
     // Toggle status text when checkbox changes
     $('.medcal-toggle-switch input').on('change', function() {
         var statusText = $(this).closest('h3').find('.medcal-status-text');

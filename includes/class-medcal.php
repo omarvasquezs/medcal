@@ -174,12 +174,8 @@ class Medcal {
 
 		$plugin_admin = new Medcal_Admin( $this->get_plugin_name(), $this->get_version(), $this->procedures );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		
-		// Add admin menu
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_admin_menu' );
-
+		// Register all admin hooks
+		$plugin_admin->register_hooks();
 	}
 
 	/**

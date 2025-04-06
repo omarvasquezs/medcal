@@ -78,7 +78,35 @@ class Medcal_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
+		// Enqueue the admin script
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/medcal-admin.js', array('jquery'), $this->version, false);
+		
+		// Enqueue jQuery UI Sortable for drag and drop functionality
+		wp_enqueue_script('jquery-ui-sortable');
+		
+		// Localize the script with data for AJAX calls
+		wp_localize_script($this->plugin_name, 'medcal_vars', array(
+			'procedure_order_nonce' => wp_create_nonce('medcal_procedure_order'),
+			'order_success_message' => __('Orden de procedimientos actualizado correctamente.', 'medcal'),
+			'order_error_message' => __('Error al actualizar el orden de procedimientos.', 'medcal'),
+		));
+	}
+
+	/**
+	 * Register hooks for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_hooks() {
+		// Register admin menu
+		add_action('admin_menu', array($this, 'add_admin_menu'));
+		
+		// Register admin scripts and styles
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
+		
+		// Register AJAX handler for procedure sorting
+		add_action('wp_ajax_medcal_update_procedure_order', array($this, 'ajax_update_procedure_order'));
 	}
 
 	/**
@@ -465,5 +493,53 @@ class Medcal_Admin {
 				'error'
 			);
 		}
+	}
+
+	/**
+	 * AJAX handler for updating procedure order
+	 *
+	 * @since    1.0.0
+	 */
+	public function ajax_update_procedure_order() {
+		 // Add debug log to see if this function is being called
+		error_log('AJAX procedure order handler called');
+		
+		// Check security nonce
+		if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'medcal_procedure_order')) {
+			error_log('Nonce verification failed');
+			wp_send_json_error(array('message' => 'Nonce verification failed'));
+			exit;
+		}
+		
+		// Check permissions
+		if (!current_user_can('manage_options')) {
+			error_log('Insufficient permissions');
+			wp_send_json_error(array('message' => 'Insufficient permissions'));
+			exit;
+		}
+		
+		// Check if procedure_order data exists
+		if (!isset($_POST['procedure_order']) || !is_array($_POST['procedure_order'])) {
+			error_log('Invalid procedure order data');
+			wp_send_json_error(array('message' => 'Invalid procedure order data'));
+			exit;
+		}
+		
+		// Log the received order data
+		error_log('Received procedure order: ' . print_r($_POST['procedure_order'], true));
+		
+		// Update procedure order
+		$order = array_map('sanitize_key', $_POST['procedure_order']);
+		$success = $this->procedures->update_procedure_order($order);
+		
+		if ($success) {
+			error_log('Procedure order updated successfully');
+			wp_send_json_success(array('message' => 'Procedure order updated successfully'));
+		} else {
+			error_log('Failed to update procedure order');
+			wp_send_json_error(array('message' => 'Failed to update procedure order'));
+		}
+		
+		exit;
 	}
 }

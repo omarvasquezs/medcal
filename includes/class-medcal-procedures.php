@@ -181,7 +181,65 @@ class Medcal_Procedures {
      * @return   array    All procedures data.
      */
     public function get_all_procedures() {
-        return $this->procedures;
+        // Check if we need to add order values
+        $this->ensure_order_values();
+        
+        // Sort procedures by order value
+        $sorted_procedures = $this->procedures;
+        uasort($sorted_procedures, function($a, $b) {
+            $a_order = isset($a['order']) ? $a['order'] : 999;
+            $b_order = isset($b['order']) ? $b['order'] : 999;
+            return $a_order - $b_order;
+        });
+        
+        return $sorted_procedures;
+    }
+
+    /**
+     * Ensure all procedures have order values
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function ensure_order_values() {
+        $update_needed = false;
+        $order = 0;
+        
+        foreach ($this->procedures as $key => $procedure) {
+            if (!isset($procedure['order'])) {
+                $this->procedures[$key]['order'] = $order;
+                $update_needed = true;
+            }
+            $order++;
+        }
+        
+        if ($update_needed) {
+            update_option('medcal_procedures', $this->procedures);
+        }
+    }
+
+    /**
+     * Update the order of procedures
+     *
+     * @since    1.0.0
+     * @access   public
+     * @param    array    $order_data    Array of procedure IDs in the desired order
+     * @return   boolean                 Whether the update was successful
+     */
+    public function update_procedure_order($order_data) {
+        if (!is_array($order_data)) {
+            return false;
+        }
+        
+        $order = 0;
+        foreach ($order_data as $procedure_id) {
+            if (isset($this->procedures[$procedure_id])) {
+                $this->procedures[$procedure_id]['order'] = $order;
+                $order++;
+            }
+        }
+        
+        return update_option('medcal_procedures', $this->procedures);
     }
 
     /**
