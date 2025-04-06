@@ -40,6 +40,12 @@ settings_errors('medcal_procedures');
         <form method="post" action="">
             <?php wp_nonce_field('medcal_save_procedures', 'medcal_nonce'); ?>
             
+            <div class="medcal-submit-row medcal-top-submit">
+                <button type="submit" name="medcal_save_procedures" class="button button-primary">
+                    <?php _e('Guardar Cambios', 'medcal'); ?>
+                </button>
+            </div>
+            
             <div id="sortable-procedures">
             <?php foreach ($procedures as $key => $procedure) : ?>
                 <div class="medcal-procedure-card" data-procedure-id="<?php echo esc_attr($key); ?>">
