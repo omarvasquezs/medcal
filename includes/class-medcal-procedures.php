@@ -250,9 +250,22 @@ class Medcal_Procedures {
      * @return   array    Enabled procedures data only.
      */
     public function get_enabled_procedures() {
-        return array_filter($this->procedures, function($procedure) {
+        // First ensure all procedures have order values
+        $this->ensure_order_values();
+        
+        // Get enabled procedures
+        $enabled_procedures = array_filter($this->procedures, function($procedure) {
             return isset($procedure['enabled']) && $procedure['enabled'];
         });
+        
+        // Sort by order value
+        uasort($enabled_procedures, function($a, $b) {
+            $a_order = isset($a['order']) ? $a['order'] : 999;
+            $b_order = isset($b['order']) ? $b['order'] : 999;
+            return $a_order - $b_order;
+        });
+        
+        return $enabled_procedures;
     }
 
     /**
