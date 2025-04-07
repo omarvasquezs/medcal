@@ -86,11 +86,17 @@
      * Calculate valid terms based on min, max and step values
      */
     function calculateValidTerms(min, max, step) {
-        // Always include 1 as the first term
-        let validTerms = [1];
+        // Always include min as the first term (which could be 1 or another value)
+        let validTerms = [min];
         
         // Then add terms that are multiples of the step until we reach max
-        for (let i = step; i <= max; i += step) {
+        // Start from the first multiple of step that is greater than min
+        let firstStep = Math.ceil(min / step) * step;
+        if (firstStep === min) {
+            firstStep += step;
+        }
+        
+        for (let i = firstStep; i <= max; i += step) {
             validTerms.push(i);
         }
         

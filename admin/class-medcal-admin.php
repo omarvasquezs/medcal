@@ -472,12 +472,72 @@ class Medcal_Admin {
 	 * @since    1.0.0
 	 */
 	private function save_general_settings() {
+		// Get the values from POST
+		$min_term = isset($_POST['min_term']) ? intval($_POST['min_term']) : 1;
+		$max_term = isset($_POST['max_term']) ? intval($_POST['max_term']) : 6;
+		$default_term = isset($_POST['default_term']) ? intval($_POST['default_term']) : 6;
+		$term_step = isset($_POST['term_step']) ? intval($_POST['term_step']) : 3;
+		
+		// Validate even/odd consistency - special case for min_term which can be 1
+		$is_valid = true;
+		$error_message = '';
+		
+		// Check if fields are valid (all should be > 0)
+		if ($min_term < 1 || $max_term < 1 || $default_term < 1 || $term_step < 1) {
+			$is_valid = false;
+			$error_message = __('Todos los plazos deben ser mayores que cero.', 'medcal');
+		}
+		// Check that max term is >= min term
+		elseif ($max_term < $min_term) {
+			$is_valid = false;
+			$error_message = __('El Plazo Máximo debe ser mayor o igual al Plazo Mínimo.', 'medcal');
+		}
+		// Check that default term is between min and max
+		elseif ($default_term < $min_term || $default_term > $max_term) {
+			$is_valid = false;
+			$error_message = __('El Plazo por Defecto debe estar entre el Plazo Mínimo y el Plazo Máximo.', 'medcal');
+		}
+		// Now validate even/odd consistency (excluding min_term=1)
+		elseif ($min_term != 1) {
+			// If min_term is not 1, then check if it's consistent with others
+			$is_max_even = $max_term % 2 == 0;
+			$is_min_even = $min_term % 2 == 0;
+			$is_default_even = $default_term % 2 == 0;
+			$is_step_even = $term_step % 2 == 0;
+			
+			if (!($is_max_even == $is_min_even && $is_max_even == $is_default_even && $is_max_even == $is_step_even)) {
+				$is_valid = false;
+				$error_message = __('Los campos Plazo Mínimo, Plazo Máximo, Plazo por Defecto y Rango de cuotas deben ser todos pares o todos impares.', 'medcal');
+			}
+		} else {
+			// Min term is 1, so just check the others
+			$is_max_even = $max_term % 2 == 0;
+			$is_default_even = $default_term % 2 == 0;
+			$is_step_even = $term_step % 2 == 0;
+			
+			if (!($is_max_even == $is_default_even && $is_max_even == $is_step_even)) {
+				$is_valid = false;
+				$error_message = __('Los campos Plazo Máximo, Plazo por Defecto y Rango de cuotas deben ser todos pares o todos impares.', 'medcal');
+			}
+		}
+		
+		if (!$is_valid) {
+			add_settings_error(
+				'medcal_general_settings',
+				'medcal_general_settings_error',
+				$error_message,
+				'error'
+			);
+			return;
+		}
+		
+		// If validation passes, save the settings
 		$general_settings = array(
 			'default_currency' => isset($_POST['default_currency']) ? sanitize_text_field($_POST['default_currency']) : 'S/. ',
-			'min_term' => isset($_POST['min_term']) ? intval($_POST['min_term']) : 1,
-			'max_term' => isset($_POST['max_term']) ? intval($_POST['max_term']) : 6,
-			'default_term' => isset($_POST['default_term']) ? intval($_POST['default_term']) : 6,
-			 'term_step' => isset($_POST['term_step']) ? intval($_POST['term_step']) : 3,
+			'min_term' => $min_term,
+			'max_term' => $max_term,
+			'default_term' => $default_term,
+			'term_step' => $term_step,
 			'contact_number' => isset($_POST['contact_number']) ? sanitize_text_field($_POST['contact_number']) : '51941888957',
 			'button_text' => isset($_POST['button_text']) ? sanitize_text_field($_POST['button_text']) : 'CONTÁCTENOS',
 			'title' => isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Simulador de Precios',
