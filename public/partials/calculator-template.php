@@ -133,7 +133,40 @@ if ($is_tabbed) {
                                                     max="<?php echo esc_attr($atts['max_term']); ?>"
                                                     value="<?php echo esc_attr($atts['default_term']); ?>"
                                                     data-calculator-id="<?php echo esc_attr($calculator_id); ?>"
-                                                    data-term-step="<?php echo esc_attr($atts['term_step']); ?>">
+                                                    data-term-step="<?php echo esc_attr($atts['term_step']); ?>"
+                                                    data-processing-commission="<?php echo esc_attr(isset($general_settings['processing_commission']) ? $general_settings['processing_commission'] : 3.10); ?>"
+                                                    data-igv="<?php echo esc_attr(isset($general_settings['igv']) ? $general_settings['igv'] : 18.00); ?>"
+                                                    <?php
+                                                    // Add bank commission data for each valid term
+                                                    $valid_terms = array();
+                                                    $term_step = isset($general_settings['term_step']) ? intval($general_settings['term_step']) : 3;
+                                                    $max_term = isset($general_settings['max_term']) ? intval($general_settings['max_term']) : 9;
+                                                    $min_term = isset($general_settings['min_term']) ? intval($general_settings['min_term']) : 1;
+                                                    
+                                                    // Calculate valid terms
+                                                    $first_step = ceil($min_term / $term_step) * $term_step;
+                                                    if ($first_step === $min_term) {
+                                                        $first_step += $term_step;
+                                                    }
+                                                    
+                                                    for ($i = $first_step; $i <= $max_term; $i += $term_step) {
+                                                        $valid_terms[] = $i;
+                                                    }
+                                                    
+                                                    if (end($valid_terms) !== $max_term && $max_term > $term_step) {
+                                                        $valid_terms[] = $max_term;
+                                                    }
+                                                    
+                                                    // Remove duplicates and sort
+                                                    $valid_terms = array_unique($valid_terms);
+                                                    sort($valid_terms);
+                                                    
+                                                    foreach ($valid_terms as $term) {
+                                                        $field_name = "bank_commission_{$term}";
+                                                        $commission_value = isset($general_settings[$field_name]) ? $general_settings[$field_name] : 0;
+                                                        echo 'data-bank-commission-' . $term . '="' . esc_attr($commission_value) . '" ';
+                                                    }
+                                                    ?>>
                                                 <div class="arrow right"><i class="fas fa-angle-right"></i></div>
                                             </div>
                                             <p style="font-size: 2rem;"><span
@@ -179,7 +212,40 @@ if ($is_tabbed) {
                         max="<?php echo esc_attr($atts['max_term']); ?>"
                         value="<?php echo esc_attr($atts['default_term']); ?>"
                         data-calculator-id="<?php echo esc_attr($calculator_id); ?>"
-                        data-term-step="<?php echo esc_attr($atts['term_step']); ?>">
+                        data-term-step="<?php echo esc_attr($atts['term_step']); ?>"
+                        data-processing-commission="<?php echo esc_attr(isset($general_settings['processing_commission']) ? $general_settings['processing_commission'] : 3.10); ?>"
+                        data-igv="<?php echo esc_attr(isset($general_settings['igv']) ? $general_settings['igv'] : 18.00); ?>"
+                        <?php
+                        // Add bank commission data for each valid term
+                        $valid_terms = array();
+                        $term_step = isset($general_settings['term_step']) ? intval($general_settings['term_step']) : 3;
+                        $max_term = isset($general_settings['max_term']) ? intval($general_settings['max_term']) : 9;
+                        $min_term = isset($general_settings['min_term']) ? intval($general_settings['min_term']) : 1;
+                        
+                        // Calculate valid terms
+                        $first_step = ceil($min_term / $term_step) * $term_step;
+                        if ($first_step === $min_term) {
+                            $first_step += $term_step;
+                        }
+                        
+                        for ($i = $first_step; $i <= $max_term; $i += $term_step) {
+                            $valid_terms[] = $i;
+                        }
+                        
+                        if (end($valid_terms) !== $max_term && $max_term > $term_step) {
+                            $valid_terms[] = $max_term;
+                        }
+                        
+                        // Remove duplicates and sort
+                        $valid_terms = array_unique($valid_terms);
+                        sort($valid_terms);
+                        
+                        foreach ($valid_terms as $term) {
+                            $field_name = "bank_commission_{$term}";
+                            $commission_value = isset($general_settings[$field_name]) ? $general_settings[$field_name] : 0;
+                            echo 'data-bank-commission-' . $term . '="' . esc_attr($commission_value) . '" ';
+                        }
+                        ?>>
                     <div class="arrow right"><i class="fas fa-angle-right"></i></div>
                 </div>
                 <p style="font-size: 2rem;"><span id="<?php echo esc_attr($calculator_id); ?>-term"></span></p>

@@ -478,7 +478,10 @@ class Medcal_Admin {
 		$default_term = isset($_POST['default_term']) ? intval($_POST['default_term']) : 6;
 		$term_step = isset($_POST['term_step']) ? intval($_POST['term_step']) : 3;
 		
-		// Validate even/odd consistency - special case for min_term which can be 1
+		// Add debug to check values
+		error_log("Settings submitted - min_term: $min_term, max_term: $max_term, default_term: $default_term, term_step: $term_step");
+		
+		// Validate basic requirements
 		$is_valid = true;
 		$error_message = '';
 		
@@ -486,39 +489,19 @@ class Medcal_Admin {
 		if ($min_term < 1 || $max_term < 1 || $default_term < 1 || $term_step < 1) {
 			$is_valid = false;
 			$error_message = __('Todos los plazos deben ser mayores que cero.', 'medcal');
+			error_log("Validation failed: values must be > 0");
 		}
 		// Check that max term is >= min term
 		elseif ($max_term < $min_term) {
 			$is_valid = false;
 			$error_message = __('El Plazo Máximo debe ser mayor o igual al Plazo Mínimo.', 'medcal');
+			error_log("Validation failed: max_term < min_term");
 		}
 		// Check that default term is between min and max
 		elseif ($default_term < $min_term || $default_term > $max_term) {
 			$is_valid = false;
 			$error_message = __('El Plazo por Defecto debe estar entre el Plazo Mínimo y el Plazo Máximo.', 'medcal');
-		}
-		// Now validate even/odd consistency (excluding min_term=1)
-		elseif ($min_term != 1) {
-			// If min_term is not 1, then check if it's consistent with others
-			$is_max_even = $max_term % 2 == 0;
-			$is_min_even = $min_term % 2 == 0;
-			$is_default_even = $default_term % 2 == 0;
-			$is_step_even = $term_step % 2 == 0;
-			
-			if (!($is_max_even == $is_min_even && $is_max_even == $is_default_even && $is_max_even == $is_step_even)) {
-				$is_valid = false;
-				$error_message = __('Los campos Plazo Mínimo, Plazo Máximo, Plazo por Defecto y Rango de cuotas deben ser todos pares o todos impares.', 'medcal');
-			}
-		} else {
-			// Min term is 1, so just check the others
-			$is_max_even = $max_term % 2 == 0;
-			$is_default_even = $default_term % 2 == 0;
-			$is_step_even = $term_step % 2 == 0;
-			
-			if (!($is_max_even == $is_default_even && $is_max_even == $is_step_even)) {
-				$is_valid = false;
-				$error_message = __('Los campos Plazo Máximo, Plazo por Defecto y Rango de cuotas deben ser todos pares o todos impares.', 'medcal');
-			}
+			error_log("Validation failed: default_term not between min_term and max_term");
 		}
 		
 		if (!$is_valid) {
@@ -531,7 +514,11 @@ class Medcal_Admin {
 			return;
 		}
 		
-		// If validation passes, save the settings
+		// Get existing settings to preserve any bank commission values
+		$existing_settings = get_option('medcal_general_settings', array());
+		error_log("Existing settings: " . print_r($existing_settings, true));
+		
+		// Start with the basic settings
 		$general_settings = array(
 			'default_currency' => isset($_POST['default_currency']) ? sanitize_text_field($_POST['default_currency']) : 'S/. ',
 			'min_term' => $min_term,
@@ -545,23 +532,94 @@ class Medcal_Admin {
 			'button_color' => isset($_POST['button_color']) && !empty($_POST['button_color']) ? sanitize_hex_color($_POST['button_color']) : '#25D366',
 			'tab_color' => isset($_POST['tab_color']) && !empty($_POST['tab_color']) ? sanitize_hex_color($_POST['tab_color']) : '#0d6efd',
 			'inactive_tab_color' => isset($_POST['inactive_tab_color']) && !empty($_POST['inactive_tab_color']) ? sanitize_hex_color($_POST['inactive_tab_color']) : '#6c757d',
+			'processing_commission' => isset($_POST['processing_commission']) ? floatval($_POST['processing_commission']) : 3.10,
+			'igv' => isset($_POST['igv']) ? floatval($_POST['igv']) : 18.00,
 		);
-
-		$success = update_option('medcal_general_settings', $general_settings);
-
-		if ($success) {
+		
+		// Calculate the valid terms for bank commissions
+		$valid_terms = array($min_term);
+		$first_step = ceil($min_term / $term_step) * $term_step;
+		if ($first_step === $min_term) {
+			$first_step += $term_step;
+		}
+		
+		for ($i = $first_step; $i <= $max_term; $i += $term_step) {
+			$valid_terms[] = $i;
+		}
+		
+		// Make sure max is included
+		if (end($valid_terms) !== $max_term && $max_term > $term_step) {
+			$valid_terms[] = $max_term;
+		}
+		
+		// Remove duplicates and sort
+		$valid_terms = array_unique($valid_terms);
+		sort($valid_terms);
+		
+		// Skip min_term if it's 1 (no commission for 1 cuota)
+		if ($valid_terms[0] === 1) {
+			array_shift($valid_terms);
+		}
+		
+		// Now add all bank commission fields from the POST data
+		foreach ($valid_terms as $term) {
+			$field_name = "bank_commission_{$term}";
+			if (isset($_POST[$field_name])) {
+				$general_settings[$field_name] = floatval($_POST[$field_name]);
+			} 
+			// If the field doesn't exist in POST but exists in previous settings, preserve it
+			elseif (isset($existing_settings[$field_name])) {
+				$general_settings[$field_name] = $existing_settings[$field_name];
+			}
+		}
+		
+		error_log("New settings to save: " . print_r($general_settings, true));
+		
+		// Check if settings have actually changed before updating
+		$settings_changed = false;
+		
+		// If count of keys is different, settings have changed
+		if (count(array_keys($existing_settings)) != count(array_keys($general_settings))) {
+			$settings_changed = true;
+			error_log("Settings changed: Different number of keys");
+		} else {
+			// Compare each setting
+			foreach ($general_settings as $key => $value) {
+				if (!isset($existing_settings[$key]) || $existing_settings[$key] !== $value) {
+					$settings_changed = true;
+					error_log("Settings changed: Key $key different. Old: " . (isset($existing_settings[$key]) ? $existing_settings[$key] : 'not set') . ", New: $value");
+					break;
+				}
+			}
+		}
+		
+		// Only update if settings have changed
+		if ($settings_changed) {
+			$success = update_option('medcal_general_settings', $general_settings);
+			error_log("Update option result: " . ($success ? 'true' : 'false'));
+			
+			if ($success) {
+				add_settings_error(
+					'medcal_general_settings',
+					'medcal_general_settings_updated',
+					__('Configuración general actualizada correctamente.', 'medcal'),
+					'success'
+				);
+			} else {
+				add_settings_error(
+					'medcal_general_settings',
+					'medcal_general_settings_error',
+					__('Ocurrió un error al guardar la configuración general.', 'medcal'),
+					'error'
+				);
+			}
+		} else {
+			// No changes, but show success message anyway
 			add_settings_error(
 				'medcal_general_settings',
 				'medcal_general_settings_updated',
-				__('Configuración general actualizada correctamente.', 'medcal'),
+				__('No se detectaron cambios en la configuración.', 'medcal'),
 				'success'
-			);
-		} else {
-			add_settings_error(
-				'medcal_general_settings',
-				'medcal_general_settings_error',
-				__('Ocurrió un error al guardar la configuración general.', 'medcal'),
-				'error'
 			);
 		}
 	}

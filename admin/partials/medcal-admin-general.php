@@ -132,6 +132,96 @@ settings_errors('medcal_general_settings');
                                value="<?php echo esc_attr($general_settings['button_text']); ?>" class="regular-text">
                     </td>
                 </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label for="processing_commission">Comisión Procesamiento (%)</label>
+                    </th>
+                    <td>
+                        <input type="number" id="processing_commission" name="processing_commission" 
+                               value="<?php echo esc_attr(isset($general_settings['processing_commission']) ? $general_settings['processing_commission'] : 3.10); ?>" 
+                               class="small-text" step="0.01" min="0">
+                        <p class="description">Porcentaje de comisión por procesamiento.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label>Comisiones Banco (%)</label>
+                    </th>
+                    <td>
+                        <div id="bank-commission-fields">
+                            <?php
+                            // Calculate the range intervals based on term_step
+                            $term_step = isset($general_settings['term_step']) ? intval($general_settings['term_step']) : 3;
+                            $max_term = isset($general_settings['max_term']) ? intval($general_settings['max_term']) : 9;
+                            
+                            // Always include commission for min term (usually 1)
+                            $min_term = isset($general_settings['min_term']) ? intval($general_settings['min_term']) : 1;
+                            
+                            // Calculate valid terms (same logic as in JavaScript)
+                            $valid_terms = array($min_term);
+                            $first_step = ceil($min_term / $term_step) * $term_step;
+                            if ($first_step === $min_term) {
+                                $first_step += $term_step;
+                            }
+                            
+                            for ($i = $first_step; $i <= $max_term; $i += $term_step) {
+                                $valid_terms[] = $i;
+                            }
+                            
+                            // Make sure max is included if it's not already
+                            if (end($valid_terms) !== $max_term && $max_term > $term_step) {
+                                $valid_terms[] = $max_term;
+                            }
+                            
+                            // Remove duplicates and sort
+                            $valid_terms = array_unique($valid_terms);
+                            sort($valid_terms);
+                            
+                            // Skip the first term (min_term) if it's 1, since we don't need commission for 1 cuota
+                            if ($valid_terms[0] === 1) {
+                                array_shift($valid_terms);
+                            }
+                            
+                            // Generate fields for each valid term
+                            foreach ($valid_terms as $term) :
+                                $field_name = "bank_commission_{$term}";
+                                $default_value = 0.00;
+                                
+                                // Use some common defaults if available
+                                if ($term == 3) $default_value = 2.39;
+                                elseif ($term == 6) $default_value = 3.99;
+                                elseif ($term == 9) $default_value = 5.99;
+                                elseif ($term == 12) $default_value = 7.99;
+                            ?>
+                            <div class="bank-commission-row" style="margin-bottom: 10px;">
+                                <label for="<?php echo esc_attr($field_name); ?>">
+                                    <?php echo esc_html("{$term} Cuotas"); ?>:
+                                </label>
+                                <input type="number" id="<?php echo esc_attr($field_name); ?>" 
+                                       name="<?php echo esc_attr($field_name); ?>" 
+                                       value="<?php echo esc_attr(isset($general_settings[$field_name]) ? $general_settings[$field_name] : $default_value); ?>" 
+                                       class="small-text" step="0.01" min="0">
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <p class="description">Porcentajes de comisión bancaria según el número de cuotas.</p>
+                        <p class="description"><strong>Nota:</strong> Cambiar el Plazo Máximo o el Rango de cuotas requiere guardar los cambios antes de que aparezcan los campos de comisión correspondientes.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label for="igv">IGV (%)</label>
+                    </th>
+                    <td>
+                        <input type="number" id="igv" name="igv" 
+                               value="<?php echo esc_attr(isset($general_settings['igv']) ? $general_settings['igv'] : 18.00); ?>" 
+                               class="small-text" step="0.01" min="0">
+                        <p class="description">Porcentaje del Impuesto General a las Ventas (IGV).</p>
+                    </td>
+                </tr>
             </table>
             
             <h3><?php _e('Personalización de Colores', 'medcal'); ?></h3>

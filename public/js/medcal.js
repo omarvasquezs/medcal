@@ -148,14 +148,70 @@
         // Set the term display (singular/plural form)
         $term.text(`${term} ${parseInt(term) === 1 ? 'CUOTA' : 'CUOTAS'}`);
         
-        // Calculate and display the monthly payment
+        // Get the base total cost
         const totalCost = parseFloat($total.data('total-cost'));
-        const monthlyPayment = (totalCost / term).toFixed(2);
         
-        $total.text(new Intl.NumberFormat('en-US', {
+        // For 1 cuota, just show the total cost (no commissions)
+        if (term === 1) {
+            const payment = totalCost.toFixed(2);
+            $total.text(formatCurrency(payment));
+            return;
+        }
+        
+        // For more than 1 cuota, apply the formula
+        // Get commission rates from data attributes
+        const processingCommission = parseFloat($range.data('processing-commission')) / 100 || 0;
+        const igvRate = parseFloat($range.data('igv')) / 100 || 0;
+        
+        // Get bank commission for the selected term
+        let bankCommission = 0;
+        const bankCommissionAttr = 'bank-commission-' + term;
+        if ($range.data(bankCommissionAttr) !== undefined) {
+            bankCommission = parseFloat($range.data(bankCommissionAttr)) / 100 || 0;
+        }
+        
+        // Implementación de la fórmula proporcionada:
+        // (Comision Procesamiento * Precio Total + IGV * (Comision Procesamiento * Precio Total) + 
+        //  X CUOTAS Comisión Banco * Precio Total + (X CUOTAS Comisión Banco * Precio Total) * IGV) + Precio Total / Número de cuotas
+        
+        const processingFee = processingCommission * totalCost;
+        const processingFeeWithIGV = processingFee + (igvRate * processingFee);
+        
+        const bankFee = bankCommission * totalCost;
+        const bankFeeWithIGV = bankFee + (igvRate * bankFee);
+        
+        const totalWithFees = processingFeeWithIGV + bankFeeWithIGV + totalCost;
+        const monthlyPayment = (totalWithFees / term).toFixed(2);
+        
+        // Display the formatted monthly payment
+        $total.text(formatCurrency(monthlyPayment));
+        
+        // Uncomment for debugging
+        /*
+        console.log({
+            totalCost,
+            processingCommission,
+            bankCommission,
+            igvRate,
+            processingFee,
+            processingFeeWithIGV,
+            bankFee,
+            bankFeeWithIGV,
+            totalWithFees,
+            monthlyPayment,
+            term
+        });
+        */
+    }
+    
+    /**
+     * Format currency with thousands separator and 2 decimal places
+     */
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
-        }).format(monthlyPayment));
+        }).format(value);
     }
     
     /**
