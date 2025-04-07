@@ -146,7 +146,11 @@
         }
         
         // Set the term display (singular/plural form)
-        $term.text(`${term} ${parseInt(term) === 1 ? 'CUOTA' : 'CUOTAS'}`);
+        if (parseInt(term) === 1) {
+            $term.text(`AL CONTADO`);
+        } else {
+            $term.text(`${term} CUOTAS`);
+        }
         
         // Get the base total cost
         const totalCost = parseFloat($total.data('total-cost'));
