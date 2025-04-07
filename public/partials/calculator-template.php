@@ -132,7 +132,8 @@ if ($is_tabbed) {
                                                     min="<?php echo esc_attr($atts['min_term']); ?>"
                                                     max="<?php echo esc_attr($atts['max_term']); ?>"
                                                     value="<?php echo esc_attr($atts['default_term']); ?>"
-                                                    data-calculator-id="<?php echo esc_attr($calculator_id); ?>">
+                                                    data-calculator-id="<?php echo esc_attr($calculator_id); ?>"
+                                                    data-term-step="<?php echo esc_attr($atts['term_step']); ?>">
                                                 <div class="arrow right"><i class="fas fa-angle-right"></i></div>
                                             </div>
                                             <p style="font-size: 2rem;"><span
@@ -177,7 +178,8 @@ if ($is_tabbed) {
                         min="<?php echo esc_attr($atts['min_term']); ?>"
                         max="<?php echo esc_attr($atts['max_term']); ?>"
                         value="<?php echo esc_attr($atts['default_term']); ?>"
-                        data-calculator-id="<?php echo esc_attr($calculator_id); ?>">
+                        data-calculator-id="<?php echo esc_attr($calculator_id); ?>"
+                        data-term-step="<?php echo esc_attr($atts['term_step']); ?>">
                     <div class="arrow right"><i class="fas fa-angle-right"></i></div>
                 </div>
                 <p style="font-size: 2rem;"><span id="<?php echo esc_attr($calculator_id); ?>-term"></span></p>

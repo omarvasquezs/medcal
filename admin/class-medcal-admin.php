@@ -477,6 +477,7 @@ class Medcal_Admin {
 			'min_term' => isset($_POST['min_term']) ? intval($_POST['min_term']) : 1,
 			'max_term' => isset($_POST['max_term']) ? intval($_POST['max_term']) : 6,
 			'default_term' => isset($_POST['default_term']) ? intval($_POST['default_term']) : 6,
+			 'term_step' => isset($_POST['term_step']) ? intval($_POST['term_step']) : 3,
 			'contact_number' => isset($_POST['contact_number']) ? sanitize_text_field($_POST['contact_number']) : '51941888957',
 			'button_text' => isset($_POST['button_text']) ? sanitize_text_field($_POST['button_text']) : 'CONTÁCTENOS',
 			'title' => isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Simulador de Precios',

@@ -27,40 +27,117 @@
         
         if (!$range.length || !$total.length || !$term.length) return;
         
+        // Get the term step configuration
+        const termStep = parseInt($range.data('term-step')) || 3;
+        const minTerm = parseInt($range.attr('min'));
+        const maxTerm = parseInt($range.attr('max'));
+        
+        // Calculate valid terms based on the step
+        const validTerms = calculateValidTerms(minTerm, maxTerm, termStep);
+        
+        // Set the range step to 1 (we'll handle the valid terms in the update logic)
+        $range.attr('step', 1);
+        
+        // Find the nearest valid term for the default value
+        const defaultValue = parseInt($range.val());
+        const nearestValidTerm = findNearestValidTerm(defaultValue, validTerms);
+        $range.val(nearestValidTerm);
+        
         // Initialize with default values
-        updateCalculation($calculator, $range.val());
+        updateCalculationWithSteps($calculator, nearestValidTerm, validTerms);
         
         // Add event listener for range input
         $range.on('input', function() {
-            updateCalculation($calculator, $(this).val());
+            const currentValue = parseInt($(this).val());
+            const nearestValidTerm = findNearestValidTerm(currentValue, validTerms);
+            
+            if (currentValue !== nearestValidTerm) {
+                $(this).val(nearestValidTerm);
+            }
+            
+            updateCalculationWithSteps($calculator, nearestValidTerm, validTerms);
         });
         
         // Add event listeners for arrows
         $calculator.find('.arrow.left').on('click', function() {
-            const min = parseInt($range.attr('min'));
-            const current = parseInt($range.val());
-            if (current > min) {
-                $range.val(current - 1);
-                updateCalculation($calculator, current - 1);
+            const currentValue = parseInt($range.val());
+            const currentIndex = validTerms.indexOf(currentValue);
+            
+            if (currentIndex > 0) {
+                const newValue = validTerms[currentIndex - 1];
+                $range.val(newValue);
+                updateCalculationWithSteps($calculator, newValue, validTerms);
             }
         });
         
         $calculator.find('.arrow.right').on('click', function() {
-            const max = parseInt($range.attr('max'));
-            const current = parseInt($range.val());
-            if (current < max) {
-                $range.val(current + 1);
-                updateCalculation($calculator, current + 1);
+            const currentValue = parseInt($range.val());
+            const currentIndex = validTerms.indexOf(currentValue);
+            
+            if (currentIndex < validTerms.length - 1) {
+                const newValue = validTerms[currentIndex + 1];
+                $range.val(newValue);
+                updateCalculationWithSteps($calculator, newValue, validTerms);
             }
         });
     }
     
     /**
-     * Update the calculation display based on the selected term
+     * Calculate valid terms based on min, max and step values
      */
-    function updateCalculation($calculator, term) {
+    function calculateValidTerms(min, max, step) {
+        // Always include 1 as the first term
+        let validTerms = [1];
+        
+        // Then add terms that are multiples of the step until we reach max
+        for (let i = step; i <= max; i += step) {
+            validTerms.push(i);
+        }
+        
+        // Make sure max is included if it's not already
+        if (validTerms[validTerms.length - 1] !== max && max > step) {
+            validTerms.push(max);
+        }
+        
+        // Remove duplicates and sort
+        return [...new Set(validTerms)].sort((a, b) => a - b);
+    }
+    
+    /**
+     * Find the nearest valid term to a given value
+     */
+    function findNearestValidTerm(value, validTerms) {
+        if (validTerms.includes(value)) {
+            return value;
+        }
+        
+        // Find the nearest valid term by distance
+        let nearest = validTerms[0];
+        let minDistance = Math.abs(value - nearest);
+        
+        for (let i = 1; i < validTerms.length; i++) {
+            const distance = Math.abs(value - validTerms[i]);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = validTerms[i];
+            }
+        }
+        
+        return nearest;
+    }
+    
+    /**
+     * Update the calculation display based on the selected term and valid terms list
+     */
+    function updateCalculationWithSteps($calculator, term, validTerms) {
         const $total = $calculator.find('[id$="-total"]');
         const $term = $calculator.find('[id$="-term"]');
+        const $range = $calculator.find('input[type="range"]');
+        
+        // Update the range position if needed
+        if (parseInt($range.val()) !== term) {
+            $range.val(term);
+        }
         
         // Set the term display (singular/plural form)
         $term.text(`${term} ${parseInt(term) === 1 ? 'CUOTA' : 'CUOTAS'}`);
@@ -73,6 +150,29 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }).format(monthlyPayment));
+    }
+    
+    /**
+     * Legacy function for backward compatibility
+     */
+    function updateCalculation($calculator, term) {
+        const $total = $calculator.find('[id$="-total"]');
+        const $term = $calculator.find('[id$="-term"]');
+        const $range = $calculator.find('input[type="range"]');
+        
+        // Get term step or use default
+        const termStep = parseInt($range.data('term-step')) || 3;
+        const minTerm = parseInt($range.attr('min'));
+        const maxTerm = parseInt($range.attr('max'));
+        
+        // Calculate valid terms
+        const validTerms = calculateValidTerms(minTerm, maxTerm, termStep);
+        
+        // Find the nearest valid term
+        const nearestValidTerm = findNearestValidTerm(parseInt(term), validTerms);
+        
+        // Use the new function with the valid terms
+        updateCalculationWithSteps($calculator, nearestValidTerm, validTerms);
     }
 
     /**

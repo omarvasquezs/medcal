@@ -57,6 +57,7 @@ class Medcal_Shortcodes {
             'min_term' => 1,
             'max_term' => 6,
             'default_term' => 6,
+            'term_step' => 3,
             'contact_number' => '51941888957',
             'button_text' => 'CONTÁCTENOS',
             'title' => 'Simulador de Precios',
@@ -81,6 +82,7 @@ class Medcal_Shortcodes {
             'min_term' => $general_settings['min_term'],
             'max_term' => $general_settings['max_term'],
             'default_term' => $general_settings['default_term'],
+            'term_step' => $general_settings['term_step'],
             'button_text' => $general_settings['button_text'],
             'title' => $general_settings['title'],
         ), $atts, 'medcal_calculator' );
@@ -126,6 +128,7 @@ class Medcal_Shortcodes {
             'min_term' => $general_settings['min_term'],
             'max_term' => $general_settings['max_term'],
             'default_term' => $general_settings['default_term'],
+            'term_step' => $general_settings['term_step'],
             'button_text' => $general_settings['button_text'],
             'title' => $general_settings['title'],
         ), $atts, 'medcal_tabbed_calculators' );

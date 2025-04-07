@@ -92,6 +92,18 @@ settings_errors('medcal_general_settings');
                 
                 <tr>
                     <th scope="row">
+                        <label for="term_step"><?php _e('Rango de cuotas', 'medcal'); ?></label>
+                    </th>
+                    <td>
+                        <input type="number" id="term_step" name="term_step" 
+                               value="<?php echo esc_attr(isset($general_settings['term_step']) ? $general_settings['term_step'] : 3); ?>" 
+                               class="small-text" min="1" max="12">
+                        <p class="description"><?php _e('Define los saltos entre los plazos disponibles. El sistema mostrará 1 cuota y múltiplos de este valor hasta el plazo máximo.', 'medcal'); ?></p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
                         <label for="title"><?php _e('Título de la Calculadora', 'medcal'); ?></label>
                     </th>
                     <td>
